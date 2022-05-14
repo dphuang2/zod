@@ -67,7 +67,6 @@
     "@rollup/plugin-typescript": "^8.2.0",
     "@types/benchmark": "^2.1.0",
     "@types/jest": "^26.0.17",
-    "@types/lodash.camelcase": "^4.3.7",
     "@types/node": "14",
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
@@ -97,8 +96,5 @@
       "eslint --cache --fix",
       "prettier --ignore-unknown --write"
     ]
-  },
-  "dependencies": {
-    "lodash.camelcase": "^4.3.0"
   }
 }

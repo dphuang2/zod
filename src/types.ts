@@ -1,5 +1,4 @@
 import { errorUtil } from "./helpers/errorUtil";
-import camelCase from "lodash.camelcase";
 import {
   addIssueToContext,
   AsyncParseReturnType,
@@ -59,7 +58,6 @@ export type CustomErrorParams = Partial<util.Omit<ZodCustomIssue, "code">>;
 export interface ZodTypeDef {
   errorMap?: ZodErrorMap;
   description?: string;
-  symbol?: string;
   name?: string;
 }
 
@@ -107,14 +105,12 @@ type RawCreateParams =
       invalid_type_error?: string;
       required_error?: string;
       description?: string;
-      symbol?: string;
       name: string;
     }
   | undefined;
 type ProcessedCreateParams = {
   errorMap?: ZodErrorMap;
   description?: string;
-  symbol?: string;
   name?: string;
 };
 function processCreateParams(params: RawCreateParams): ProcessedCreateParams {
@@ -124,7 +120,6 @@ function processCreateParams(params: RawCreateParams): ProcessedCreateParams {
     invalid_type_error,
     required_error,
     description,
-    symbol,
     name,
   } = params;
   if (errorMap && (invalid_type_error || required_error)) {
@@ -141,7 +136,7 @@ function processCreateParams(params: RawCreateParams): ProcessedCreateParams {
       return { message: params.invalid_type_error };
     return { message: ctx.defaultError };
   };
-  return { errorMap: customMap, description, symbol, name };
+  return { errorMap: customMap, description, name };
 }
 
 export type SafeParseSuccess<Output> = { success: true; data: Output };
@@ -165,15 +160,7 @@ export abstract class ZodType<
     return this._def.description;
   }
 
-  get symbol() {
-    return camelCase(this._def.symbol ? this._def.symbol : this._def.name);
-  }
-
   get name() {
-    return this._def.name;
-  }
-
-  get id() {
     return this._def.name;
   }
 
