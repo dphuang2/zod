@@ -115,13 +115,8 @@ type ProcessedCreateParams = {
 };
 function processCreateParams(params: RawCreateParams): ProcessedCreateParams {
   if (!params) return {};
-  const {
-    errorMap,
-    invalid_type_error,
-    required_error,
-    description,
-    name,
-  } = params;
+  const { errorMap, invalid_type_error, required_error, description, name } =
+    params;
   if (errorMap && (invalid_type_error || required_error)) {
     throw new Error(
       `Can't use "invalid" or "required" in conjunction with custom error map.`
@@ -160,8 +155,23 @@ export abstract class ZodType<
     return this._def.description;
   }
 
-  get name() {
+  get name(): string {
+    if (this instanceof ZodOptional)
+      return this._def.innerType.name as unknown as string;
+    if (this instanceof ZodNullable)
+      return this._def.innerType.name as unknown as string;
+    if (this instanceof ZodEffects)
+      return this._def.schema.name as unknown as string;
+    if (!this._def.name) throw Error("ZodType does not have a name");
     return this._def.name;
+  }
+
+  get isObject(): boolean {
+    if (this instanceof ZodOptional) return this._def.innerType.isObject;
+    if (this instanceof ZodNullable) return this._def.innerType.isObject;
+    if (this instanceof ZodEffects) return this._def.schema.isObject;
+    if (!this._def.name) throw Error("ZodType does not have a name");
+    return this instanceof ZodObject;
   }
 
   abstract _parse(input: ParseInput): ParseReturnType<Output>;
