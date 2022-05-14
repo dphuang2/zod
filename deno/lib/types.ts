@@ -1,4 +1,5 @@
 import { errorUtil } from "./helpers/errorUtil.ts";
+import camelCase from "lodash.camelcase";
 import {
   addIssueToContext,
   AsyncParseReturnType,
@@ -58,6 +59,8 @@ export type CustomErrorParams = Partial<util.Omit<ZodCustomIssue, "code">>;
 export interface ZodTypeDef {
   errorMap?: ZodErrorMap;
   description?: string;
+  symbol?: string;
+  name?: string;
 }
 
 class ParseInputLazyPath implements ParseInput {
@@ -160,6 +163,14 @@ export abstract class ZodType<
 
   get description() {
     return this._def.description;
+  }
+
+  get symbol() {
+    return camelCase(this._def.symbol ? this._def.symbol : this._def.name);
+  }
+
+  get name() {
+    return this._def.name;
   }
 
   abstract _parse(input: ParseInput): ParseReturnType<Output>;
