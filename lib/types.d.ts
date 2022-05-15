@@ -46,6 +46,7 @@ export declare abstract class ZodType<Output = any, Def extends ZodTypeDef = Zod
     get description(): string | undefined;
     get name(): string;
     get isObject(): boolean;
+    get isString(): boolean;
     abstract _parse(input: ParseInput): ParseReturnType<Output>;
     _getType(input: ParseInput): string;
     _getOrReturnCtx(input: ParseInput, ctx?: ParseContext | undefined): ParseContext;

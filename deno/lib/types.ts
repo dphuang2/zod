@@ -174,6 +174,14 @@ export abstract class ZodType<
     return this instanceof ZodObject;
   }
 
+  get isString(): boolean {
+    if (this instanceof ZodOptional) return this._def.innerType.isString;
+    if (this instanceof ZodNullable) return this._def.innerType.isString;
+    if (this instanceof ZodEffects) return this._def.schema.isString;
+    if (!this._def.name) throw Error("ZodType does not have a name");
+    return this instanceof ZodString;
+  }
+
   abstract _parse(input: ParseInput): ParseReturnType<Output>;
 
   _getType(input: ParseInput): string {
