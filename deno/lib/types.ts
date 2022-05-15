@@ -179,6 +179,8 @@ export abstract class ZodType<
   }
 
   get isUnion(): boolean {
+    if (this instanceof ZodOptional) return this._def.innerType.isUnion;
+    if (this instanceof ZodNullable) return this._def.innerType.isUnion;
     return this instanceof ZodUnion;
   }
 
