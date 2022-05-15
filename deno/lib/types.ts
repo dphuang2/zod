@@ -156,13 +156,18 @@ export abstract class ZodType<
   }
 
   get name(): string {
+    if (this._def.name) return this._def.name;
     if (this instanceof ZodOptional)
       return this._def.innerType.name as unknown as string;
     if (this instanceof ZodNullable)
       return this._def.innerType.name as unknown as string;
     if (this instanceof ZodEffects)
       return this._def.schema.name as unknown as string;
-    if (!this._def.name) throw Error("ZodType does not have a name");
+    if (this instanceof ZodUnion)
+      return this._def.options[0].name as unknown as string;
+    if (!this._def.name) {
+      throw Error("ZodType does not have a name");
+    }
     return this._def.name;
   }
 
@@ -170,7 +175,6 @@ export abstract class ZodType<
     if (this instanceof ZodOptional) return this._def.innerType.isObject;
     if (this instanceof ZodNullable) return this._def.innerType.isObject;
     if (this instanceof ZodEffects) return this._def.schema.isObject;
-    if (!this._def.name) throw Error("ZodType does not have a name");
     return this instanceof ZodObject;
   }
 
@@ -178,7 +182,6 @@ export abstract class ZodType<
     if (this instanceof ZodOptional) return this._def.innerType.isString;
     if (this instanceof ZodNullable) return this._def.innerType.isString;
     if (this instanceof ZodEffects) return this._def.schema.isString;
-    if (!this._def.name) throw Error("ZodType does not have a name");
     return this instanceof ZodString;
   }
 
