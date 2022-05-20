@@ -191,6 +191,14 @@ export abstract class ZodType<
     return this instanceof ZodString;
   }
 
+  get isNumber(): boolean {
+    if (this instanceof ZodOptional) return this._def.innerType.isNumber;
+    if (this instanceof ZodNullable) return this._def.innerType.isNumber;
+    if (this instanceof ZodEffects) return this._def.schema.isNumber;
+    if (this instanceof ZodUnion) return this._def.options[0].isNumber;
+    return this instanceof ZodNumber;
+  }
+
   abstract _parse(input: ParseInput): ParseReturnType<Output>;
 
   _getType(input: ParseInput): string {
