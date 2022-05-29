@@ -178,6 +178,13 @@ export abstract class ZodType<
     return this instanceof ZodObject;
   }
 
+  get isArray(): boolean {
+    if (this instanceof ZodOptional) return this._def.innerType.isArray;
+    if (this instanceof ZodNullable) return this._def.innerType.isArray;
+    if (this instanceof ZodEffects) return this._def.schema.isArray;
+    return this instanceof ZodArray;
+  }
+
   get isUnion(): boolean {
     if (this instanceof ZodOptional) return this._def.innerType.isUnion;
     if (this instanceof ZodNullable) return this._def.innerType.isUnion;
