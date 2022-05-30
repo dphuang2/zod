@@ -20,6 +20,7 @@ export declare type CustomErrorParams = Partial<util.Omit<ZodCustomIssue, "code"
 export interface ZodTypeDef {
     errorMap?: ZodErrorMap;
     description?: string;
+    canBeProportioned?: boolean;
     name?: string;
 }
 declare type RawCreateParams = {
@@ -27,6 +28,7 @@ declare type RawCreateParams = {
     invalid_type_error?: string;
     required_error?: string;
     description?: string;
+    canBeProportioned?: boolean;
     name: string;
 } | undefined;
 export declare type SafeParseSuccess<Output> = {
@@ -44,6 +46,7 @@ export declare abstract class ZodType<Output = any, Def extends ZodTypeDef = Zod
     readonly _input: Input;
     readonly _def: Def;
     get description(): string | undefined;
+    get canBeProportioned(): boolean | undefined;
     get name(): string;
     get isObject(): boolean;
     get isArray(): boolean;

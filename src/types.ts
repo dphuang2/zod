@@ -58,6 +58,7 @@ export type CustomErrorParams = Partial<util.Omit<ZodCustomIssue, "code">>;
 export interface ZodTypeDef {
   errorMap?: ZodErrorMap;
   description?: string;
+  canBeProportioned?: boolean;
   name?: string;
 }
 
@@ -105,18 +106,26 @@ type RawCreateParams =
       invalid_type_error?: string;
       required_error?: string;
       description?: string;
+      canBeProportioned?: boolean;
       name: string;
     }
   | undefined;
 type ProcessedCreateParams = {
   errorMap?: ZodErrorMap;
+  canBeProportioned?: boolean;
   description?: string;
   name?: string;
 };
 function processCreateParams(params: RawCreateParams): ProcessedCreateParams {
   if (!params) return {};
-  const { errorMap, invalid_type_error, required_error, description, name } =
-    params;
+  const {
+    errorMap,
+    invalid_type_error,
+    required_error,
+    description,
+    name,
+    canBeProportioned,
+  } = params;
   if (errorMap && (invalid_type_error || required_error)) {
     throw new Error(
       `Can't use "invalid" or "required" in conjunction with custom error map.`
@@ -131,7 +140,7 @@ function processCreateParams(params: RawCreateParams): ProcessedCreateParams {
       return { message: params.invalid_type_error };
     return { message: ctx.defaultError };
   };
-  return { errorMap: customMap, description, name };
+  return { errorMap: customMap, description, name, canBeProportioned };
 }
 
 export type SafeParseSuccess<Output> = { success: true; data: Output };
@@ -153,6 +162,16 @@ export abstract class ZodType<
 
   get description() {
     return this._def.description;
+  }
+
+  get canBeProportioned(): boolean | undefined {
+    if (this instanceof ZodOptional)
+      return this._def.innerType.canBeProportioned;
+    if (this instanceof ZodNullable)
+      return this._def.innerType.canBeProportioned;
+    if (this instanceof ZodEffects) return this._def.schema.canBeProportioned;
+    if (this instanceof ZodUnion) return this._def.options[0].canBeProportioned;
+    return this._def.canBeProportioned;
   }
 
   get name(): string {
