@@ -233,6 +233,17 @@ export abstract class ZodType<
     return this instanceof ZodBoolean;
   }
 
+  get isDate(): boolean {
+    if (this instanceof ZodOptional) return this._def.innerType.isDate;
+    if (this instanceof ZodNullable) return this._def.innerType.isDate;
+    if (this instanceof ZodEffects) return this._def.schema.isDate;
+    if (this instanceof ZodUnion) return this._def.options[0].isDate;
+    return this instanceof ZodDate;
+  }
+
+  /**
+   * TypeScript primitives
+   */
   get isPrimitive(): boolean {
     return this.isNumber || this.isString || this.isBoolean;
   }

@@ -54,6 +54,10 @@ export declare abstract class ZodType<Output = any, Def extends ZodTypeDef = Zod
     get isString(): boolean;
     get isNumber(): boolean;
     get isBoolean(): boolean;
+    get isDate(): boolean;
+    /**
+     * TypeScript primitives
+     */
     get isPrimitive(): boolean;
     abstract _parse(input: ParseInput): ParseReturnType<Output>;
     _getType(input: ParseInput): string;
