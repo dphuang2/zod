@@ -225,6 +225,18 @@ export abstract class ZodType<
     return this instanceof ZodNumber;
   }
 
+  get isBoolean(): boolean {
+    if (this instanceof ZodOptional) return this._def.innerType.isBoolean;
+    if (this instanceof ZodNullable) return this._def.innerType.isBoolean;
+    if (this instanceof ZodEffects) return this._def.schema.isBoolean;
+    if (this instanceof ZodUnion) return this._def.options[0].isBoolean;
+    return this instanceof ZodBoolean;
+  }
+
+  get isPrimitive(): boolean {
+    return this.isNumber || this.isString || this.isBoolean;
+  }
+
   abstract _parse(input: ParseInput): ParseReturnType<Output>;
 
   _getType(input: ParseInput): string {
