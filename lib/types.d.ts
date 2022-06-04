@@ -59,6 +59,7 @@ export declare abstract class ZodType<Output = any, Def extends ZodTypeDef = Zod
      * TypeScript primitives
      */
     get isPrimitive(): boolean;
+    get isAggregatable(): boolean;
     abstract _parse(input: ParseInput): ParseReturnType<Output>;
     _getType(input: ParseInput): string;
     _getOrReturnCtx(input: ParseInput, ctx?: ParseContext | undefined): ParseContext;

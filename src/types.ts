@@ -248,6 +248,10 @@ export abstract class ZodType<
     return this.isNumber || this.isString || this.isBoolean;
   }
 
+  get isAggregatable(): boolean {
+    return this.isUnion || this.isPrimitive || this.isDate;
+  }
+
   abstract _parse(input: ParseInput): ParseReturnType<Output>;
 
   _getType(input: ParseInput): string {
